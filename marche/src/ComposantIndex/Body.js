@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Box } from "@mui/system";
@@ -14,29 +13,59 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Button } from '@mui/material';
+import Donnees from './Donnees';
 
 function Body() {
 
-    const [ressource, setRessource] = React.useState(undefined);
+    const [ressourceId, setRessourceId] = React.useState("");
+    const [ressource, setRessource] = React.useState("");
     const [isLoadRessources, setIsLoadRessources] = React.useState(false);
+    const [isLoadRessource, setIsLoadRessource] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [urlDialog, setUrlDialog] = React.useState(undefined);
     const [nomDialog, setNomDialog] = React.useState(undefined);
     const [ressources, setRessources] = React.useState(undefined);
+    const [test, setTest] = React.useState(undefined);
+
 
 
     useEffect(() => {
+      
+      var date = new Date();
+      var json = JSON.stringify(date);
+      console.log(json);  // "2014-01-01T23:28:56.782Z"
+      console.log(isLoadRessource);
       axios.get(`http://localhost:3000/api/item`).then(function (reponse) {
-        console.log("Je peux load");
+        console.log(reponse.data);
         setRessources(reponse.data);
-        console.log(ressources + "")
         setIsLoadRessources(true);
     });
+
+
     }, []);
 
+    useEffect(() => {
+  
+      axios.get(`http://localhost:3000/api/item/`+ ressourceId,{
+        params : {
+          _id: ressourceId
+        }
+      }
+        
+      ).then(function (reponse) {
+        setRessource(reponse.data);
+        setTest(reponse.data)
+        setIsLoadRessource(true);
+    });
+    }, [ressourceId]);
 
-      const handleChangeRessource = (event) => {
-        setRessource(event.target.value);
+
+
+
+
+      const handleChangeRessourceId = (event) => {
+        console.log(event.target.value);
+        setRessourceId(event.target.value);
       };
 
       const handleChangeNom = (event) => {
@@ -88,23 +117,34 @@ function Body() {
     return (
         <Box >
           {isLoadRessources? 
-            <Box sx={{display:"flex",justifyContent:"center"}}>
+            <Box sx={{display:"flex",justifyContent:"center", color:"black"}}>
             <FormControl sx={{ m: 1, minWidth: 120 }}>
               <Select
-                value={ressource}
-                onChange={handleChangeRessource}
-                displayEmpty
-                inputProps={{ 'aria-label': 'Without label' }}
+                value={ressourceId}
+                onChange={handleChangeRessourceId}
               >
-                {ressources?.forEach((r) => {
-                  <MenuItem value={r.id}>Test</MenuItem>
+                {ressources?.map((r) => {return(
+                  <MenuItem key={r._id} sx={{color:"black", fontWeight:"bolder"}} value={r._id}>{r.nom}</MenuItem>
+                )
                 })}
               </Select>
             </FormControl>
                 <Ajouter onClick={handleClickOpen} fontSize="large" sx={{marginTop:"50px"}}/>
             </Box>
-          : "" }
+          : ""}
+          {isLoadRessource? 
+          <Box sx={{width:"95%", margin:"auto", height:"600px"}}>
+            <Donnees ressource={ressource}/>
+          </Box>
+          : ""
+          }
+          
 
+          
+          
+            
+            
+             
 
 
 
