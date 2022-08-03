@@ -82,16 +82,21 @@ app.use((req, res, next) => {
 
 
   app.get('/api/item/:id', (req, res, next) => {
-    console.log(req.params.id);
-    console.log("Je rentre la");
+    
     r.findOne({ _id: req.params.id})
       .then(thing => res.status(200).json(thing))
       .catch(error => res.status(404).json({ error }));
   });
 
   app.get('/api/item', (req, res, next) => {
-    console.log("la");
+    
     r.find()
+      .then(things => res.status(200).json(things))
+      .catch(error => res.status(400).json({ error }));
+  });
+
+  app.get('/api/itemPrix/:id', (req, res, next) => {
+    ir.find({'ressource._id' : req.params.id})
       .then(things => res.status(200).json(things))
       .catch(error => res.status(400).json({ error }));
   });

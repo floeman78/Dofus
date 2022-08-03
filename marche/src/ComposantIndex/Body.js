@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
@@ -25,7 +25,6 @@ function Body() {
     const [urlDialog, setUrlDialog] = React.useState(undefined);
     const [nomDialog, setNomDialog] = React.useState(undefined);
     const [ressources, setRessources] = React.useState(undefined);
-    const [test, setTest] = React.useState(undefined);
 
 
 
@@ -33,10 +32,8 @@ function Body() {
       
       var date = new Date();
       var json = JSON.stringify(date);
-      console.log(json);  // "2014-01-01T23:28:56.782Z"
-      console.log(isLoadRessource);
       axios.get(`http://localhost:3000/api/item`).then(function (reponse) {
-        console.log(reponse.data);
+        
         setRessources(reponse.data);
         setIsLoadRessources(true);
     });
@@ -54,7 +51,6 @@ function Body() {
         
       ).then(function (reponse) {
         setRessource(reponse.data);
-        setTest(reponse.data)
         setIsLoadRessource(true);
     });
     }, [ressourceId]);
@@ -64,7 +60,7 @@ function Body() {
 
 
       const handleChangeRessourceId = (event) => {
-        console.log(event.target.value);
+        
         setRessourceId(event.target.value);
       };
 
@@ -118,10 +114,13 @@ function Body() {
         <Box >
           {isLoadRessources? 
             <Box sx={{display:"flex",justifyContent:"center", color:"black"}}>
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <FormControl sx={{ minWidth: 120, marginTop:"50px" }}>
               <Select
                 value={ressourceId}
                 onChange={handleChangeRessourceId}
+                MenuProps={{
+                  PaperProps: { sx: { maxHeight: 200 }}
+                }}
               >
                 {ressources?.map((r) => {return(
                   <MenuItem key={r._id} sx={{color:"black", fontWeight:"bolder"}} value={r._id}>{r.nom}</MenuItem>
@@ -129,11 +128,11 @@ function Body() {
                 })}
               </Select>
             </FormControl>
-                <Ajouter onClick={handleClickOpen} fontSize="large" sx={{marginTop:"50px"}}/>
+                <Ajouter onClick={handleClickOpen} fontSize="large" sx={{marginTop:"60px"}}/>
             </Box>
           : ""}
           {isLoadRessource? 
-          <Box sx={{width:"95%", margin:"auto", height:"600px"}}>
+          <Box sx={{width:"95%", margin:"auto", height:"600px", marginTop:"100px"}}>
             <Donnees ressource={ressource}/>
           </Box>
           : ""
